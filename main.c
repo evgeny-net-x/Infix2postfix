@@ -103,6 +103,7 @@ void factor(void)
 			break;
 		case TOKTYPE_MINUS:
 			Token_Delete(token);
+			printf("0 ");
 			S();
 			printf("- ");
 			break;

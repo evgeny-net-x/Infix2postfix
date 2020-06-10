@@ -1,4 +1,4 @@
-P=main
+P=i2p
 OBJECTS=*.c
 CFLAGS=-Wall -o $(P)
 CC=gcc
