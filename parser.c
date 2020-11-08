@@ -298,13 +298,12 @@ static void parseName(Token *token)
 		if (sym == ' ')
 			sym = get_next_char();
 
+		unget_char(sym);
 		if (sym == '(')
 			unget_char('*');
 
 		token_init(token, TOKEN_TYPE_VAR, lexem, pos);
 	}
-
-	unget_char(sym);
 }
 
 static void parseNum(Token *token)
