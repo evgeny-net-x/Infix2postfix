@@ -6,9 +6,28 @@
 #include <stdint.h>
 #include <math.h>
 #include <ctype.h>
-#include <string.h>
+#include "token.h"
 
-#define LEXEM_LENGTH 10
+enum {
+	TOKEN_TYPE_NULL = 0,
+	TOKEN_TYPE_EOF,
+
+	TOKEN_TYPE_PLUS,
+	TOKEN_TYPE_MINUS,
+	TOKEN_TYPE_MUL,
+	TOKEN_TYPE_DIV,
+	TOKEN_TYPE_MOD,
+	TOKEN_TYPE_POWER,
+
+	TOKEN_TYPE_E,
+	TOKEN_TYPE_PI,
+	TOKEN_TYPE_VAR,
+	TOKEN_TYPE_NUM,
+	TOKEN_TYPE_FUNCNAME,
+
+	TOKEN_TYPE_BRACE_OPEN,
+	TOKEN_TYPE_BRACE_CLOSE
+};
 
 /*
 	LL(1) GRAMMAR:
@@ -19,15 +38,20 @@
 
 	A -> A '*' B
 	   | A '/' B
+	   | A '%' B
 	   | B
 
-	B -> B '^' factor
+	B -> '-' C
+	   | C
+
+	C -> C '^' factor
+	   | C '^' '-' factor
 	   | factor
 
 	factor -> 'num'
-	   | 'var'
 	   | '(' S ')'
-	   | '-' S
+	   | 'var'
+	   | 'funcName' '(' S ')'
 
 
 	GRAMMAR WITHOUT LEFT RECURSION:
@@ -41,61 +65,50 @@
 
 	a -> '*' B a
 	   | '/' B a
+	   | '%' B a
 	   | eps
 
-	B -> factor b
+	B -> '-' C
+	   | C
 
-	b -> '^' factor b
+	C -> factor c
+
+	c -> '^' factor c
+	   | '^' '-' factor c
 	   | eps
 
 	factor -> 'num'
-	   | 'var'
 	   | '(' S ')'
-	   | '-' S
+	   | 'var'
+	   | 'funcName' '(' S ')'
 */
 
-enum { // TOKTYPE - TOKEN TYPE
-	TOKTYPE_EOF = 100,
+void parse(void);
 
-	TOKTYPE_PLUS,
-	TOKTYPE_MINUS,
-	TOKTYPE_MUL,
-	TOKTYPE_DIV,
-	TOKTYPE_POWER,
+static void S(void);
+static void s(void);
 
-	TOKTYPE_VAR,
-	TOKTYPE_NUM,
+static void A(void);
+static void a(void);
 
-	TOKTYPE_BRACE_OPEN,
-	TOKTYPE_BRACE_CLOSE
-};
+static void B(void);
 
-typedef struct Token {
-	int pos;
-	int type;
-	char lexem[LEXEM_LENGTH];
-} Token;
+static void C(void);
+static void c(void);
 
-void S(void);
-void s(void);
+static void factor(void);
 
-void A(void);
-void a(void);
-
-void B(void);
-void b(void);
-
-void factor();
-
-static Token *Token_New(int, char *);
-static void Token_Delete(Token *);
-
-static Token *get_next_token(void);
+static void get_next_token(Token *);
 static char get_next_char(void);
-static void uget_token(Token *);
-static void lex_error(char *);
+static void unget_char(char);
+static void unget_token(Token *);
+
+static void parseName(Token *);
+static void parseNum(Token *);
+
+static void lex_error(char *, char);
 static void syntax_error(char *, Token *);
-static Token *parseVar(void);
-static Token *parseNum(void);
+
+static int isFunctionName(char *);
 
 #endif
