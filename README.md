@@ -48,7 +48,7 @@
 `C` -> `C '^' factor` | `C '^' '-' factor` | `factor`  
 `factor` -> `'num'` | `'(' S ')'` | `'var'` | `'funcName' '(' S ')'`  
 
-## GRAMMAR WITHOUT LEFT RECURSION:
+## LL(1) GRAMMAR WITHOUT LEFT RECURSION:
 `S` -> `A s`  
 `s` -> `'+' A s` | `'-' A s` | `eps`  
 `A` -> `B a`  
