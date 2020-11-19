@@ -29,60 +29,6 @@ enum {
 	TOKEN_TYPE_BRACE_CLOSE
 };
 
-/*
-	LL(1) GRAMMAR:
-
-	S -> S '+' A
-	   | S '-' A
-	   | A
-
-	A -> A '*' B
-	   | A '/' B
-	   | A '%' B
-	   | B
-
-	B -> '-' C
-	   | C
-
-	C -> C '^' factor
-	   | C '^' '-' factor
-	   | factor
-
-	factor -> 'num'
-	   | '(' S ')'
-	   | 'var'
-	   | 'funcName' '(' S ')'
-
-
-	GRAMMAR WITHOUT LEFT RECURSION:
-	S -> A s
-
-	s -> '+' A s
-	   | '-' A s
-	   | eps
-
-	A -> B a
-
-	a -> '*' B a
-	   | '/' B a
-	   | '%' B a
-	   | eps
-
-	B -> '-' C
-	   | C
-
-	C -> factor c
-
-	c -> '^' factor c
-	   | '^' '-' factor c
-	   | eps
-
-	factor -> 'num'
-	   | '(' S ')'
-	   | 'var'
-	   | 'funcName' '(' S ')'
-*/
-
 void parse(void);
 
 static void S(void);
